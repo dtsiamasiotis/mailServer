@@ -4,25 +4,26 @@ import lombok.Data;
 
 import javax.persistence.*;
 
+
 @Data
 @Entity
-@Table(name = "users")
-public class User {
+@Table(name = "outgoingMails")
+public class OutgoingMail {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
     @Column
-    private String username;
+    private String recipient;
 
     @Column
-    private String password;
+    private String message;
 
     @Column
-    private String firstName;
+    private String title;
 
-    @Column
-    private String lastName;
+    @OneToOne
+    @JoinColumn(name = "sender_id")
+    private User sender;
 
-    protected User(){}
 }
