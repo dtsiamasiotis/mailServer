@@ -5,6 +5,7 @@ import com.mailapp.server.entities.User;
 import com.mailapp.server.repositories.OutgoingMailRepository;
 import com.mailapp.server.repositories.UserRepository;
 import com.mailapp.server.requests.SendMailRequest;
+import com.mailapp.server.utils.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +22,7 @@ public class ServerRestController {
     private UserRepository userRepository;
     private OutgoingMailRepository outgoingMailRepository;
     @Autowired private PasswordEncoder encoder;
+    @Autowired private EmailService emailService;
 
     public ServerRestController(UserRepository userRepository, OutgoingMailRepository outgoingMailRepository)
     {
@@ -67,7 +69,9 @@ public class ServerRestController {
 
         User userFromDB = userRepository.findByUsername(sendMailRequest.getUsername());
         OutgoingMail outgoingMail = sendMailRequest.toOutgoingMail(userFromDB);
+        emailService.sendSimpleMessage(outgoingMail.getRecipient(),outgoingMail.getTitle(),outgoingMail.getMessage());
         outgoingMailRepository.save(outgoingMail);
         return "OK";
     }
+
 }
